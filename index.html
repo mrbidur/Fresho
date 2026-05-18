@@ -12,9 +12,15 @@
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes progressBar { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
 .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
 .animate-slideUp { animation: slideUp 0.3s ease-out; }
 .animate-pulse-once { animation: pulse 0.5s ease-out; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-shimmer { background: linear-gradient(90deg, #a855f7 25%, #ec4899 50%, #a855f7 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+.animate-progress { animation: progressBar 2.5s ease-in-out forwards; }
 </style>
 </head>
 <body>
@@ -50,6 +56,123 @@ const categories = [
   { id: 'skin', name: 'Skin Aesthetics', emoji: '\uD83E\uDDEA' },
   { id: 'nails', name: 'Nails & Makeup', emoji: '\uD83D\uDC85' },
 ];
+
+const venueImages = {
+  h1: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop',
+  h2: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop',
+  h3: 'https://images.unsplash.com/photo-1585747860286-6e94e60e2eb0?w=400&h=300&fit=crop',
+  h4: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=300&fit=crop',
+  d1: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&h=300&fit=crop',
+  d2: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=300&fit=crop',
+  d3: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&h=300&fit=crop',
+  d4: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=400&h=300&fit=crop',
+  s1: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop',
+  s2: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=300&fit=crop',
+  s3: 'https://images.unsplash.com/photo-1540555700478-4be289fbec6d?w=400&h=300&fit=crop',
+  s4: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=400&h=300&fit=crop',
+  sk1: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
+  sk2: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=400&h=300&fit=crop',
+  sk3: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=300&fit=crop',
+  sk4: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop',
+  n1: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop',
+  n2: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
+  n3: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop',
+  n4: 'https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=400&h=300&fit=crop',
+};
+
+const reviewsData = {
+  h1: [
+    { name: 'Prerna S.', rating: 5, text: 'Best fade in town, very hygienic! The staff was friendly and the ambiance is top-notch.' },
+    { name: 'Rohan Thapa', rating: 5, text: 'Got a perfect hair color here. Rajesh really knows his craft. Will come back for sure.' },
+    { name: 'Anjali K.', rating: 4, text: 'Great experience overall. The hair spa treatment was so relaxing. Highly recommend.' },
+  ],
+  h2: [
+    { name: 'Bikash Maharjan', rating: 5, text: 'Cleanest barber lounge in Thamel. Suman gives the best beard trims.' },
+    { name: 'Sneha Rai', rating: 4, text: 'My husband loves this place. Professional service every single time.' },
+    { name: 'Dipesh Gurung', rating: 5, text: 'Amazing atmosphere and skilled barbers. The hot towel service is a bonus.' },
+  ],
+  h3: [
+    { name: 'Sunil Shrestha', rating: 4, text: 'Quick and affordable haircuts. Never have to wait too long.' },
+    { name: 'Manisha Tamang', rating: 5, text: 'Got my daughter a great haircut here. Very patient with kids.' },
+  ],
+  h4: [
+    { name: 'Kiran B.', rating: 5, text: 'Premium grooming experience. The hot towel shave is something else.' },
+    { name: 'Aarav Poudel', rating: 5, text: 'Best grooming salon in Lazimpat. Always leave looking sharp.' },
+    { name: 'Nisha Adhikari', rating: 4, text: 'Love the hair spa treatment here. Very relaxing environment.' },
+  ],
+  d1: [
+    { name: 'Suman Karki', rating: 5, text: 'Very professional dentists, zero pain. Dr. Sita made me feel completely at ease.' },
+    { name: 'Priya Maharjan', rating: 5, text: 'Best dental clinic in Kathmandu. The cleaning was thorough and painless.' },
+    { name: 'Ramesh T.', rating: 4, text: 'Got my root canal done here. Very skilled doctors and modern equipment.' },
+  ],
+  d2: [
+    { name: 'Anjali Shrestha', rating: 5, text: 'Dr. Prabha is amazing with kids. My son was not scared at all.' },
+    { name: 'Nabin Rai', rating: 4, text: 'Good dental care at reasonable prices. Clean and well-maintained clinic.' },
+  ],
+  d3: [
+    { name: 'Kabita Lama', rating: 4, text: 'Friendly staff and thorough checkups. Got my filling done quickly.' },
+    { name: 'Deepak Gurung', rating: 5, text: 'Very gentle dentists. The whole procedure was painless.' },
+    { name: 'Mina K.', rating: 4, text: 'Good location and easy to reach. Professional service.' },
+  ],
+  d4: [
+    { name: 'Sunita Basnet', rating: 5, text: 'The best dental experience I have ever had. Absolutely painless.' },
+    { name: 'Arun Thapa', rating: 5, text: 'Dr. Sunita is incredibly skilled. Got my wisdom tooth out with zero issues.' },
+  ],
+  s1: [
+    { name: 'Rekha Tamang', rating: 5, text: 'The deep tissue massage was heavenly. Best spa in the valley.' },
+    { name: 'Pema Sherpa', rating: 5, text: 'Himalayan Oasis lives up to its name. Pure bliss and relaxation.' },
+    { name: 'Anita Gurung', rating: 4, text: 'Wonderful aromatherapy session. The therapists are very skilled.' },
+  ],
+  s2: [
+    { name: 'Tashi Lama', rating: 5, text: 'Incredibly peaceful atmosphere. The hot stone therapy was transformative.' },
+    { name: 'Sangita R.', rating: 4, text: 'Great wellness center near Boudha. Perfect for a weekend detox.' },
+  ],
+  s3: [
+    { name: 'Dorje Sherpa', rating: 4, text: 'Convenient location in Thamel. Good massage at reasonable prices.' },
+    { name: 'Kabita Thapa', rating: 5, text: 'The facial treatment here is amazing. My skin felt brand new afterward.' },
+    { name: 'Pasang T.', rating: 4, text: 'Relaxing place with friendly staff. Would recommend the aromatherapy.' },
+  ],
+  s4: [
+    { name: 'Mingma Sherpa', rating: 5, text: 'Worth the drive to Nagarkot. The mountain views plus spa is unbeatable.' },
+    { name: 'Yangjee Tamang', rating: 5, text: 'Absolutely serene experience. The best spa day I have ever had.' },
+  ],
+  sk1: [
+    { name: 'Alisha Joshi', rating: 5, text: 'The hydrafacial treatment was amazing, highly recommend. My skin is glowing.' },
+    { name: 'Prabin S.', rating: 4, text: 'Got my acne treated here. Seeing great results after 3 sessions.' },
+    { name: 'Sunita M.', rating: 5, text: 'Dr. Alisha really knows skin. Professional and caring approach.' },
+  ],
+  sk2: [
+    { name: 'Ritu Sharma', rating: 5, text: 'Best aesthetics clinic on Durbar Marg. The chemical peel was transformative.' },
+    { name: 'Nabin R.', rating: 4, text: 'Great consultation and treatment plan. Seeing improvements already.' },
+  ],
+  sk3: [
+    { name: 'Sabina Poudel', rating: 4, text: 'Good skin clinic with modern equipment. The laser session went smoothly.' },
+    { name: 'Keshav G.', rating: 5, text: 'Dr. Sabina is very knowledgeable. Got excellent advice for my skin concerns.' },
+    { name: 'Mina Thapa', rating: 4, text: 'Professional service and clean environment. Reasonable pricing too.' },
+  ],
+  sk4: [
+    { name: 'Pooja KC', rating: 5, text: 'Excellent derma care. The consultation was thorough and helpful.' },
+    { name: 'Aashish B.', rating: 4, text: 'Good treatment for my skin issues. The doctors are very patient.' },
+  ],
+  n1: [
+    { name: 'Srijana M.', rating: 5, text: 'Best nail art in town. The gel manicure lasted over 3 weeks without chipping.' },
+    { name: 'Puja Shrestha', rating: 5, text: 'Love the designs here. Always get compliments on my nails after visiting.' },
+    { name: 'Nisha T.', rating: 4, text: 'Great pedicure experience. Very hygienic and professional.' },
+  ],
+  n2: [
+    { name: 'Binita Rai', rating: 5, text: 'Amazing beauty bar. Got my bridal makeup trial done here and loved it.' },
+    { name: 'Asha Gurung', rating: 4, text: 'Good nail services with lots of color options. Friendly staff.' },
+  ],
+  n3: [
+    { name: 'Sunita KC', rating: 4, text: 'Trendy nail designs and great atmosphere. Perfect for a girls day out.' },
+    { name: 'Deepa Thapa', rating: 5, text: 'The bridal makeup package is worth every rupee. Looked stunning on my wedding day.' },
+    { name: 'Manisha S.', rating: 4, text: 'Good service at fair prices. The gel nails turned out beautiful.' },
+  ],
+  n4: [
+    { name: 'Sarita Basnet', rating: 5, text: 'Best makeup lounge in Maharajgunj. Professional artists who listen to what you want.' },
+    { name: 'Gita Adhikari', rating: 5, text: 'Got engagement makeup done here. Everyone said I looked absolutely gorgeous.' },
+  ],
+};
 
 const venuesData = {
   hair: [
@@ -159,6 +282,8 @@ function App() {
   const [walletBalances, setWalletBalances] = useState({ h1: 2500, d1: 5000 });
   const [revenues, setRevenues] = useState({ h1: 0, d1: 0 });
   const [toast, setToast] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('venue');
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   const merchantOptions = [
     { id: 'h1', name: 'Durbarmarg Hair Studio' },
@@ -177,6 +302,8 @@ function App() {
     setSelectedTime(null);
     setSelectedStaff(null);
     setBookingSuccess(false);
+    setPaymentMethod('venue');
+    setProcessingPayment(false);
     setModalOpen(true);
   };
 
@@ -186,25 +313,54 @@ function App() {
   };
 
   const confirmBooking = () => {
-    const newBooking = {
-      id: Date.now(),
-      venue: selectedVenue.name,
-      venueId: selectedVenue.id,
-      service: selectedService.name,
-      price: selectedService.price,
-      time: selectedTime,
-      staff: selectedStaff,
-      client: 'Guest Client',
-      status: 'upcoming',
-    };
-    setBookings(prev => [...prev, newBooking]);
-    setBookingSuccess(true);
+    if (paymentMethod === 'digital') {
+      setProcessingPayment(true);
+      setTimeout(() => {
+        const commission = Math.round(selectedService.price * 0.10);
+        const merchantId = selectedVenue.id;
+        setWalletBalances(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) - commission }));
+
+        const newBooking = {
+          id: Date.now(),
+          venue: selectedVenue.name,
+          venueId: selectedVenue.id,
+          service: selectedService.name,
+          price: selectedService.price,
+          time: selectedTime,
+          staff: selectedStaff,
+          client: 'Guest Client',
+          status: 'upcoming',
+          prepaid: true,
+        };
+        setBookings(prev => [...prev, newBooking]);
+        setProcessingPayment(false);
+        setBookingSuccess(true);
+        showToast(`Payment of Rs. ${selectedService.price.toLocaleString()} processed. Commission Rs. ${commission} deducted.`);
+      }, 2800);
+    } else {
+      const newBooking = {
+        id: Date.now(),
+        venue: selectedVenue.name,
+        venueId: selectedVenue.id,
+        service: selectedService.name,
+        price: selectedService.price,
+        time: selectedTime,
+        staff: selectedStaff,
+        client: 'Guest Client',
+        status: 'upcoming',
+        prepaid: false,
+      };
+      setBookings(prev => [...prev, newBooking]);
+      setBookingSuccess(true);
+    }
   };
 
   const completeBooking = (booking) => {
     const commission = Math.round(booking.price * 0.10);
     const merchantId = booking.venueId;
-    setWalletBalances(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) - commission }));
+    if (!booking.prepaid) {
+      setWalletBalances(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) - commission }));
+    }
     setRevenues(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) + booking.price }));
     setBookings(prev => prev.filter(b => b.id !== booking.id));
     setCompletedBookings(prev => [...prev, { ...booking, status: 'completed', commission }]);
@@ -299,6 +455,9 @@ function App() {
           bookingSuccess={bookingSuccess}
           confirmBooking={confirmBooking}
           closeModal={closeModal}
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+          processingPayment={processingPayment}
         />
       )}
     </div>
@@ -343,8 +502,14 @@ function ClientView({ darkMode, cardClass, inputClass, selectedCategory, setSele
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredVenues.map(venue => (
           <div key={venue.id} className={`rounded-xl border overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${cardClass}`}>
-            <div className={`h-32 bg-gradient-to-br ${venue.gradient} flex items-end p-4`}>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs font-medium">
+            <div className="h-40 relative overflow-hidden">
+              <img
+                src={venueImages[venue.id]}
+                alt={venue.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="absolute bottom-3 left-3 bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs font-medium">
                 {categories.find(c => c.id === selectedCategory)?.emoji} {categories.find(c => c.id === selectedCategory)?.name}
               </div>
             </div>
@@ -439,6 +604,9 @@ function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMercha
                   <div className="flex items-center gap-2 mb-1">
                     <Icons.User />
                     <span className="font-medium">{booking.client}</span>
+                    {booking.prepaid && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">Prepaid via Wallet</span>
+                    )}
                   </div>
                   <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                     {booking.service} - {booking.time} - Staff: {booking.staff}
@@ -467,6 +635,9 @@ function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMercha
                   <Icons.User />
                   <span className="font-medium">{booking.client}</span>
                   <span className="ml-auto text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Completed</span>
+                  {booking.prepaid && (
+                    <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">Prepaid</span>
+                  )}
                 </div>
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   {booking.service} - Rs. {booking.price.toLocaleString()} (Commission: Rs. {booking.commission})
@@ -479,10 +650,33 @@ function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMercha
     </div>
   );
 }
-function BookingModal({ darkMode, cardClass, venue, category, step, setStep, selectedService, setSelectedService, selectedTime, setSelectedTime, selectedStaff, setSelectedStaff, bookingSuccess, confirmBooking, closeModal }) {
+function BookingModal({ darkMode, cardClass, venue, category, step, setStep, selectedService, setSelectedService, selectedTime, setSelectedTime, selectedStaff, setSelectedStaff, bookingSuccess, confirmBooking, closeModal, paymentMethod, setPaymentMethod, processingPayment }) {
   const services = servicesData[category] || [];
   const staff = staffData[venue.id] || ['Staff Member 1', 'Staff Member 2', 'Staff Member 3'];
   const modalBg = darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200';
+  const reviews = reviewsData[venue.id] || [];
+
+  if (processingPayment) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className={`w-full max-w-md rounded-2xl border p-8 text-center animate-fadeIn ${modalBg}`}>
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 rounded-full border-4 border-purple-200 border-t-purple-500 animate-spin"></div>
+          </div>
+          <h3 className="text-xl font-bold mb-2">Processing Payment</h3>
+          <p className={`mb-4 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Connecting to secure payment gateway...</p>
+          <div className={`w-full h-2 rounded-full overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-gray-200'}`}>
+            <div className="h-full rounded-full animate-progress animate-shimmer"></div>
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <Icons.CreditCard />
+            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>eSewa / Khalti / Fonepay</span>
+          </div>
+          <p className={`mt-2 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Please do not close this window</p>
+        </div>
+      </div>
+    );
+  }
 
   if (bookingSuccess) {
     return (
@@ -491,7 +685,12 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
           <div className="text-green-500 flex justify-center mb-4 animate-pulse-once"><Icons.CheckCircle /></div>
           <h3 className="text-2xl font-bold mb-2">Booking Confirmed!</h3>
           <p className={`mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your appointment at {venue.name} has been booked successfully.</p>
-          <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{selectedService?.name} - {selectedTime} with {selectedStaff}</p>
+          <p className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{selectedService?.name} - {selectedTime} with {selectedStaff}</p>
+          {paymentMethod === 'digital' && (
+            <div className="mb-4 px-4 py-2 rounded-lg bg-blue-50 border border-blue-200">
+              <p className="text-sm text-blue-700 font-medium">Paid via Digital Wallet - Rs. {selectedService?.price.toLocaleString()}</p>
+            </div>
+          )}
           <button onClick={closeModal} className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:opacity-90 transition-all duration-300">
             Done
           </button>
@@ -503,7 +702,7 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={closeModal}>
       <div className={`w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border p-6 animate-fadeIn ${modalBg}`} onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold">{venue.name}</h2>
             <div className="flex items-center gap-2 mt-1">
@@ -517,6 +716,36 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
             <Icons.X />
           </button>
         </div>
+
+        {/* Venue Image */}
+        <div className="mb-4 rounded-xl overflow-hidden h-36">
+          <img src={venueImages[venue.id]} alt={venue.name} className="w-full h-full object-cover" />
+        </div>
+
+        {/* Reviews Section */}
+        {reviews.length > 0 && step === 1 && (
+          <div className={`mb-5 p-4 rounded-xl border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-gray-200 bg-gray-50'}`}>
+            <h4 className="font-semibold mb-3 flex items-center gap-2">
+              <span className="text-yellow-500"><Icons.Star /></span>
+              Reviews & Ratings
+            </h4>
+            <div className="space-y-3">
+              {reviews.map((review, idx) => (
+                <div key={idx} className={`p-3 rounded-lg ${darkMode ? 'bg-slate-600/50' : 'bg-white'}`}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium">{review.name}</span>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: review.rating }, (_, i) => (
+                        <span key={i} className="text-yellow-500"><Icons.Star /></span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{review.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {step === 1 && (
           <div className="animate-slideUp">
@@ -599,7 +828,7 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
         {step === 3 && (
           <div className="animate-slideUp">
             <h3 className="font-semibold mb-4">Booking Summary</h3>
-            <div className={`p-4 rounded-xl border space-y-3 mb-6 ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-gray-200 bg-gray-50'}`}>
+            <div className={`p-4 rounded-xl border space-y-3 mb-4 ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-gray-200 bg-gray-50'}`}>
               <div className="flex justify-between">
                 <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Venue</span>
                 <span className="text-sm font-medium">{venue.name}</span>
@@ -620,15 +849,58 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
                 <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Price</span>
                 <span className="text-sm font-bold text-purple-500">Rs. {selectedService?.price.toLocaleString()}</span>
               </div>
-              <hr className={`${darkMode ? 'border-slate-600' : 'border-gray-200'}`} />
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold">Amount Due Today</span>
-                <div className="text-right">
-                  <span className="text-lg font-bold text-green-500">Rs. 0</span>
-                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Pay at Venue After Service</p>
-                </div>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className={`p-4 rounded-xl border mb-6 ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-gray-200 bg-gray-50'}`}>
+              <h4 className="font-semibold mb-3 text-sm">Payment Method</h4>
+              <div className="space-y-2">
+                <label className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === 'venue' ? (darkMode ? 'bg-slate-600 border border-purple-500' : 'bg-purple-50 border border-purple-300') : (darkMode ? 'bg-slate-700 border border-slate-600' : 'bg-white border border-gray-200')}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="venue"
+                    checked={paymentMethod === 'venue'}
+                    onChange={() => setPaymentMethod('venue')}
+                    className="accent-purple-500"
+                  />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium">Pay at Venue</span>
+                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Rs. 0 due now - pay after your service</p>
+                  </div>
+                </label>
+                <label className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === 'digital' ? (darkMode ? 'bg-slate-600 border border-purple-500' : 'bg-purple-50 border border-purple-300') : (darkMode ? 'bg-slate-700 border border-slate-600' : 'bg-white border border-gray-200')}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="digital"
+                    checked={paymentMethod === 'digital'}
+                    onChange={() => setPaymentMethod('digital')}
+                    className="accent-purple-500"
+                  />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium">Pay Now via Digital Wallet</span>
+                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>eSewa / Khalti / Fonepay - Rs. {selectedService?.price.toLocaleString()}</p>
+                  </div>
+                  <Icons.CreditCard />
+                </label>
               </div>
             </div>
+
+            <div className={`p-3 rounded-lg mb-6 text-center ${paymentMethod === 'digital' ? 'bg-blue-50 border border-blue-200' : (darkMode ? 'bg-slate-700' : 'bg-green-50 border border-green-200')}`}>
+              {paymentMethod === 'digital' ? (
+                <div>
+                  <span className="text-lg font-bold text-blue-600">Rs. {selectedService?.price.toLocaleString()}</span>
+                  <p className="text-xs text-blue-500">Due now via digital wallet</p>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-lg font-bold text-green-500">Rs. 0</span>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-green-600'}`}>Pay at Venue After Service</p>
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-3">
               <button onClick={() => setStep(2)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-100 hover:bg-gray-200'}`}>
                 Back
@@ -637,7 +909,7 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
                 onClick={confirmBooking}
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
               >
-                <Icons.Check /> Confirm Booking
+                <Icons.Check /> {paymentMethod === 'digital' ? 'Pay & Confirm' : 'Confirm Booking'}
               </button>
             </div>
           </div>
