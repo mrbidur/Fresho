@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fresho - Appointment Marketplace</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+.animate-slideUp { animation: slideUp 0.3s ease-out; }
+.animate-pulse-once { animation: pulse 0.5s ease-out; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+const Icons = {
+  MapPin: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>),
+  Search: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>),
+  Star: () => (<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>),
+  Clock: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>),
+  User: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>),
+  ChevronRight: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>),
+  X: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>),
+  Check: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>),
+  CheckCircle: () => (<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>),
+  AlertTriangle: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>),
+  Wallet: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>),
+  Calendar: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>),
+  ArrowRight: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>),
+  Menu: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>),
+  Sun: () => (<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>),
+  Moon: () => (<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>),
+  CreditCard: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>),
+  Users: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>),
+  TrendingUp: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>),
+};
+const categories = [
+  { id: 'hair', name: 'Hair & Barber', emoji: '\uD83D\uDC87\u200D\u2642\uFE0F' },
+  { id: 'dental', name: 'Dental Care', emoji: '\uD83E\uDDB7' },
+  { id: 'spa', name: 'Spa & Wellness', emoji: '\uD83D\uDC86\u200D\u2640\uFE0F' },
+  { id: 'skin', name: 'Skin Aesthetics', emoji: '\uD83E\uDDEA' },
+  { id: 'nails', name: 'Nails & Makeup', emoji: '\uD83D\uDC85' },
+];
+
+const venuesData = {
+  hair: [
+    { id: 'h1', name: 'Durbarmarg Hair Studio', rating: 4.9, distance: 0.5, gradient: 'from-purple-500 to-pink-500' },
+    { id: 'h2', name: 'Thamel Barber Lounge', rating: 4.8, distance: 1.2, gradient: 'from-blue-500 to-purple-500' },
+    { id: 'h3', name: 'New Road Cuts', rating: 4.7, distance: 0.8, gradient: 'from-indigo-500 to-blue-500' },
+    { id: 'h4', name: 'Lazimpat Grooming', rating: 4.9, distance: 2.1, gradient: 'from-pink-500 to-rose-500' },
+  ],
+  dental: [
+    { id: 'd1', name: 'Kathmandu Dental Clinic', rating: 4.9, distance: 0.3, gradient: 'from-cyan-500 to-blue-500' },
+    { id: 'd2', name: 'Patan Smile Center', rating: 4.8, distance: 1.8, gradient: 'from-teal-500 to-cyan-500' },
+    { id: 'd3', name: 'Chabahil Dental Care', rating: 4.7, distance: 2.5, gradient: 'from-blue-500 to-indigo-500' },
+    { id: 'd4', name: 'Baluwatar Tooth Clinic', rating: 5.0, distance: 1.0, gradient: 'from-sky-500 to-blue-500' },
+  ],
+  spa: [
+    { id: 's1', name: 'Himalayan Oasis Spa', rating: 4.9, distance: 1.5, gradient: 'from-green-500 to-teal-500' },
+    { id: 's2', name: 'Boudha Wellness Center', rating: 4.8, distance: 2.0, gradient: 'from-emerald-500 to-green-500' },
+    { id: 's3', name: 'Thamel Relaxation Hub', rating: 4.7, distance: 0.6, gradient: 'from-teal-500 to-emerald-500' },
+    { id: 's4', name: 'Nagarkot Serenity Spa', rating: 5.0, distance: 2.3, gradient: 'from-lime-500 to-green-500' },
+  ],
+  skin: [
+    { id: 'sk1', name: 'Jhamsikhel Skin Studio', rating: 4.8, distance: 1.3, gradient: 'from-orange-500 to-pink-500' },
+    { id: 'sk2', name: 'Durbar Marg Aesthetics', rating: 4.9, distance: 0.4, gradient: 'from-rose-500 to-orange-500' },
+    { id: 'sk3', name: 'Maharajgunj Skin Clinic', rating: 4.7, distance: 2.2, gradient: 'from-amber-500 to-orange-500' },
+    { id: 'sk4', name: 'Baluwatar Derma Care', rating: 4.8, distance: 1.7, gradient: 'from-yellow-500 to-amber-500' },
+  ],
+  nails: [
+    { id: 'n1', name: 'Kupondole Nail Art', rating: 4.9, distance: 1.1, gradient: 'from-fuchsia-500 to-pink-500' },
+    { id: 'n2', name: 'Jhamsikhel Beauty Bar', rating: 4.8, distance: 0.9, gradient: 'from-violet-500 to-fuchsia-500' },
+    { id: 'n3', name: 'Thamel Glam Studio', rating: 4.7, distance: 0.7, gradient: 'from-pink-500 to-violet-500' },
+    { id: 'n4', name: 'Maharajgunj Makeup Lounge', rating: 5.0, distance: 2.4, gradient: 'from-purple-500 to-fuchsia-500' },
+  ],
+};
+
+const servicesData = {
+  hair: [
+    { name: "Men's Haircut", price: 400 },
+    { name: 'Hair Color', price: 1200 },
+    { name: 'Beard Trim', price: 200 },
+    { name: 'Hair Spa Treatment', price: 1800 },
+  ],
+  dental: [
+    { name: 'Wisdom Tooth Consultation', price: 1500 },
+    { name: 'Teeth Cleaning', price: 2000 },
+    { name: 'Filling', price: 3000 },
+    { name: 'Root Canal', price: 8000 },
+  ],
+  spa: [
+    { name: 'Deep Tissue Massage', price: 3500 },
+    { name: 'Aromatherapy', price: 2800 },
+    { name: 'Hot Stone Therapy', price: 4000 },
+    { name: 'Facial Treatment', price: 2000 },
+  ],
+  skin: [
+    { name: 'Chemical Peel', price: 5000 },
+    { name: 'Acne Treatment', price: 3000 },
+    { name: 'Laser Session', price: 8000 },
+    { name: 'Skin Consultation', price: 1000 },
+  ],
+  nails: [
+    { name: 'Gel Manicure', price: 1500 },
+    { name: 'Pedicure', price: 1200 },
+    { name: 'Nail Art', price: 2000 },
+    { name: 'Bridal Makeup', price: 15000 },
+  ],
+};
+
+const staffData = {
+  h1: ['Rajesh Shrestha', 'Anita Tamang', 'Bikash Gurung'],
+  h2: ['Suman Rai', 'Priya Maharjan', 'Deepak Lama'],
+  h3: ['Anil Thapa', 'Sabina KC', 'Roshan Magar'],
+  h4: ['Kiran Basnet', 'Maya Sherpa', 'Ramesh Adhikari'],
+  d1: ['Dr. Sita Sharma', 'Dr. Rajan Poudel', 'Dr. Anita Joshi', 'Dr. Bikram Thapa'],
+  d2: ['Dr. Prabha Rai', 'Dr. Sunil Maharjan', 'Dr. Nisha Tamang'],
+  d3: ['Dr. Hari Shrestha', 'Dr. Kamala Gurung', 'Dr. Mohan Lama'],
+  d4: ['Dr. Sunita Basnet', 'Dr. Arun KC', 'Dr. Meena Adhikari'],
+  s1: ['Laxmi Tamang', 'Pema Sherpa', 'Dawa Lama'],
+  s2: ['Sangita Rai', 'Tashi Gurung', 'Nima Sherpa'],
+  s3: ['Kabita Thapa', 'Dorje Lama', 'Pasang Sherpa'],
+  s4: ['Mingma Sherpa', 'Yangjee Tamang', 'Karma Lama'],
+  sk1: ['Dr. Alisha Joshi', 'Dr. Prabin Shrestha', 'Sunita Maharjan'],
+  sk2: ['Dr. Ritu Sharma', 'Dr. Nabin Rai', 'Anjali Tamang'],
+  sk3: ['Dr. Sabina Poudel', 'Dr. Keshav Gurung', 'Mina Thapa'],
+  sk4: ['Dr. Pooja KC', 'Dr. Aashish Basnet', 'Rekha Lama'],
+  n1: ['Srijana Maharjan', 'Puja Shrestha', 'Nisha Tamang'],
+  n2: ['Binita Rai', 'Asha Gurung', 'Kamala Lama'],
+  n3: ['Sunita KC', 'Deepa Thapa', 'Manisha Sherpa'],
+  n4: ['Sarita Basnet', 'Gita Adhikari', 'Rina Magar'],
+};
+
+const timeSlots = ['9:00 AM', '10:00 AM', '11:30 AM', '1:30 PM', '3:00 PM', '4:00 PM', '5:30 PM'];
+function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [view, setView] = useState('client');
+  const [selectedCategory, setSelectedCategory] = useState('hair');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedVenue, setSelectedVenue] = useState(null);
+  const [bookingStep, setBookingStep] = useState(1);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookings, setBookings] = useState([]);
+  const [completedBookings, setCompletedBookings] = useState([]);
+  const [selectedMerchant, setSelectedMerchant] = useState('h1');
+  const [walletBalances, setWalletBalances] = useState({ h1: 2500, d1: 5000 });
+  const [revenues, setRevenues] = useState({ h1: 0, d1: 0 });
+  const [toast, setToast] = useState(null);
+
+  const merchantOptions = [
+    { id: 'h1', name: 'Durbarmarg Hair Studio' },
+    { id: 'd1', name: 'Kathmandu Dental Clinic' },
+  ];
+
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const openModal = (venue) => {
+    setSelectedVenue(venue);
+    setBookingStep(1);
+    setSelectedService(null);
+    setSelectedTime(null);
+    setSelectedStaff(null);
+    setBookingSuccess(false);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedVenue(null);
+  };
+
+  const confirmBooking = () => {
+    const newBooking = {
+      id: Date.now(),
+      venue: selectedVenue.name,
+      venueId: selectedVenue.id,
+      service: selectedService.name,
+      price: selectedService.price,
+      time: selectedTime,
+      staff: selectedStaff,
+      client: 'Guest Client',
+      status: 'upcoming',
+    };
+    setBookings(prev => [...prev, newBooking]);
+    setBookingSuccess(true);
+  };
+
+  const completeBooking = (booking) => {
+    const commission = Math.round(booking.price * 0.10);
+    const merchantId = booking.venueId;
+    setWalletBalances(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) - commission }));
+    setRevenues(prev => ({ ...prev, [merchantId]: (prev[merchantId] || 0) + booking.price }));
+    setBookings(prev => prev.filter(b => b.id !== booking.id));
+    setCompletedBookings(prev => [...prev, { ...booking, status: 'completed', commission }]);
+    showToast(`Completed! Rs. ${booking.price} collected. Commission: Rs. ${commission}`);
+  };
+
+  const filteredVenues = venuesData[selectedCategory].filter(v =>
+    v.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const pendingForMerchant = bookings.filter(b => b.venueId === selectedMerchant);
+  const completedForMerchant = completedBookings.filter(b => b.venueId === selectedMerchant);
+
+  const bgClass = darkMode ? 'bg-slate-900 text-white' : 'bg-gray-50 text-gray-900';
+  const cardClass = darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200';
+  const inputClass = darkMode ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500';
+
+  return (
+    <div className={`min-h-screen transition-all duration-300 ${bgClass}`}>
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 animate-slideUp">
+          <div className="bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
+            <Icons.Check /> {toast}
+          </div>
+        </div>
+      )}
+
+      <header className={`sticky top-0 z-40 backdrop-blur-lg border-b transition-all duration-300 ${darkMode ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'}`}>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">Fresho</h1>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-lg transition-all duration-300 ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-100 hover:bg-gray-200'}`}>
+              {darkMode ? <Icons.Sun /> : <Icons.Moon />}
+            </button>
+            <button onClick={() => setView(view === 'client' ? 'provider' : 'client')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all duration-300">
+              <span className="hidden sm:inline">Switch View:</span>
+              <span className="font-bold">{view === 'client' ? 'PROVIDER DASHBOARD' : 'CLIENT MARKETPLACE'}</span>
+            </button>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto px-4 pb-2">
+          <div className={`text-xs px-3 py-1 rounded-full inline-block ${view === 'client' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+            {view === 'client' ? 'CLIENT MARKETPLACE' : 'PROVIDER DASHBOARD'} Active
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        {view === 'client' ? (
+          <ClientView
+            darkMode={darkMode}
+            cardClass={cardClass}
+            inputClass={inputClass}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            filteredVenues={filteredVenues}
+            openModal={openModal}
+          />
+        ) : (
+          <ProviderView
+            darkMode={darkMode}
+            cardClass={cardClass}
+            selectedMerchant={selectedMerchant}
+            setSelectedMerchant={setSelectedMerchant}
+            merchantOptions={merchantOptions}
+            walletBalances={walletBalances}
+            revenues={revenues}
+            pendingForMerchant={pendingForMerchant}
+            completedForMerchant={completedForMerchant}
+            completeBooking={completeBooking}
+            inputClass={inputClass}
+          />
+        )}
+      </main>
+
+      {modalOpen && selectedVenue && (
+        <BookingModal
+          darkMode={darkMode}
+          cardClass={cardClass}
+          venue={selectedVenue}
+          category={selectedCategory}
+          step={bookingStep}
+          setStep={setBookingStep}
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          selectedStaff={selectedStaff}
+          setSelectedStaff={setSelectedStaff}
+          bookingSuccess={bookingSuccess}
+          confirmBooking={confirmBooking}
+          closeModal={closeModal}
+        />
+      )}
+    </div>
+  );
+}
+function ClientView({ darkMode, cardClass, inputClass, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, filteredVenues, openModal }) {
+  return (
+    <div className="animate-fadeIn">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-purple-500"><Icons.MapPin /></span>
+        <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Kathmandu, Nepal</span>
+      </div>
+
+      <div className="relative mb-6">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><Icons.Search /></span>
+        <input
+          type="text"
+          placeholder="Search venues..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={`w-full pl-10 pr-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 ${inputClass}`}
+        />
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+        {categories.map(cat => (
+          <button
+            key={cat.id}
+            onClick={() => setSelectedCategory(cat.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all duration-300 ${
+              selectedCategory === cat.id
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25'
+                : darkMode ? 'bg-slate-800 text-gray-300 hover:bg-slate-700' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+            }`}
+          >
+            <span>{cat.emoji}</span>
+            <span>{cat.name}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredVenues.map(venue => (
+          <div key={venue.id} className={`rounded-xl border overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${cardClass}`}>
+            <div className={`h-32 bg-gradient-to-br ${venue.gradient} flex items-end p-4`}>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs font-medium">
+                {categories.find(c => c.id === selectedCategory)?.emoji} {categories.find(c => c.id === selectedCategory)?.name}
+              </div>
+            </div>
+            <div className="p-4">
+              <h3 className="font-semibold text-lg mb-2">{venue.name}</h3>
+              <div className="flex items-center gap-4 mb-3">
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <Icons.Star />
+                  <span className="text-sm font-medium">{venue.rating}</span>
+                </div>
+                <div className={`flex items-center gap-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <Icons.MapPin />
+                  <span>{venue.distance} km</span>
+                </div>
+              </div>
+              <button
+                onClick={() => openModal(venue)}
+                className="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                View Services <Icons.ChevronRight />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMerchant, merchantOptions, walletBalances, revenues, pendingForMerchant, completedForMerchant, completeBooking, inputClass }) {
+  const walletBalance = walletBalances[selectedMerchant] || 0;
+  const revenue = revenues[selectedMerchant] || 0;
+  const lowBalance = walletBalance < 200;
+
+  return (
+    <div className="animate-fadeIn">
+      <div className="mb-6">
+        <label className={`text-sm font-medium mb-2 block ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Active Merchant</label>
+        <select
+          value={selectedMerchant}
+          onChange={(e) => setSelectedMerchant(e.target.value)}
+          className={`w-full sm:w-auto px-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 ${inputClass}`}
+        >
+          {merchantOptions.map(m => (
+            <option key={m.id} value={m.id}>{m.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {lowBalance && (
+        <div className="mb-6 p-4 rounded-xl bg-yellow-50 border border-yellow-200 flex items-center gap-3">
+          <span className="text-yellow-600"><Icons.AlertTriangle /></span>
+          <span className="text-yellow-800 text-sm font-medium">Low Balance: Top up via eSewa to avoid listing suspension.</span>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-purple-100 text-purple-600"><Icons.Wallet /></div>
+            <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Prepaid Wallet Balance</span>
+          </div>
+          <p className="text-2xl font-bold">Rs. {walletBalance.toLocaleString()}</p>
+        </div>
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-green-100 text-green-600"><Icons.TrendingUp /></div>
+            <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Revenue Generated Today</span>
+          </div>
+          <p className="text-2xl font-bold">Rs. {revenue.toLocaleString()}</p>
+        </div>
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-lg bg-blue-100 text-blue-600"><Icons.Calendar /></div>
+            <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Pending Bookings</span>
+          </div>
+          <p className="text-2xl font-bold">{pendingForMerchant.length}</p>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Icons.Clock /> Upcoming Appointments</h2>
+        {pendingForMerchant.length === 0 ? (
+          <div className={`p-8 rounded-xl border text-center ${cardClass}`}>
+            <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No upcoming appointments. Bookings made in the Client Marketplace will appear here.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {pendingForMerchant.map(booking => (
+              <div key={booking.id} className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${cardClass}`}>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Icons.User />
+                    <span className="font-medium">{booking.client}</span>
+                  </div>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {booking.service} - {booking.time} - Staff: {booking.staff}
+                  </p>
+                  <p className="text-sm font-semibold text-purple-500">Rs. {booking.price.toLocaleString()}</p>
+                </div>
+                <button
+                  onClick={() => completeBooking(booking)}
+                  className="px-4 py-2 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+                >
+                  <Icons.Check /> Complete & Collect
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {completedForMerchant.length > 0 && (
+        <div>
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Icons.Check /> Completed</h2>
+          <div className="space-y-3">
+            {completedForMerchant.map(booking => (
+              <div key={booking.id} className={`p-4 rounded-xl border opacity-75 ${cardClass}`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <Icons.User />
+                  <span className="font-medium">{booking.client}</span>
+                  <span className="ml-auto text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Completed</span>
+                </div>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {booking.service} - Rs. {booking.price.toLocaleString()} (Commission: Rs. {booking.commission})
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+function BookingModal({ darkMode, cardClass, venue, category, step, setStep, selectedService, setSelectedService, selectedTime, setSelectedTime, selectedStaff, setSelectedStaff, bookingSuccess, confirmBooking, closeModal }) {
+  const services = servicesData[category] || [];
+  const staff = staffData[venue.id] || ['Staff Member 1', 'Staff Member 2', 'Staff Member 3'];
+  const modalBg = darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200';
+
+  if (bookingSuccess) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={closeModal}>
+        <div className={`w-full max-w-md rounded-2xl border p-8 text-center animate-fadeIn ${modalBg}`} onClick={e => e.stopPropagation()}>
+          <div className="text-green-500 flex justify-center mb-4 animate-pulse-once"><Icons.CheckCircle /></div>
+          <h3 className="text-2xl font-bold mb-2">Booking Confirmed!</h3>
+          <p className={`mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your appointment at {venue.name} has been booked successfully.</p>
+          <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{selectedService?.name} - {selectedTime} with {selectedStaff}</p>
+          <button onClick={closeModal} className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:opacity-90 transition-all duration-300">
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={closeModal}>
+      <div className={`w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border p-6 animate-fadeIn ${modalBg}`} onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold">{venue.name}</h2>
+            <div className="flex items-center gap-2 mt-1">
+              {[1, 2, 3].map(s => (
+                <div key={s} className={`w-8 h-1 rounded-full ${s <= step ? 'bg-purple-500' : darkMode ? 'bg-slate-600' : 'bg-gray-200'}`} />
+              ))}
+              <span className={`text-xs ml-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Step {step} of 3</span>
+            </div>
+          </div>
+          <button onClick={closeModal} className={`p-2 rounded-lg transition-all duration-300 ${darkMode ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}>
+            <Icons.X />
+          </button>
+        </div>
+
+        {step === 1 && (
+          <div className="animate-slideUp">
+            <h3 className="font-semibold mb-4">Select a Service</h3>
+            <div className="space-y-2">
+              {services.map((service, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => { setSelectedService(service); setStep(2); }}
+                  className={`w-full p-4 rounded-xl border text-left transition-all duration-300 flex items-center justify-between ${
+                    selectedService?.name === service.name
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="font-medium">{service.name}</span>
+                  <span className="text-purple-500 font-semibold">Rs. {service.price.toLocaleString()}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="animate-slideUp">
+            <h3 className="font-semibold mb-4">Select Time</h3>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
+              {timeSlots.map(time => (
+                <button
+                  key={time}
+                  onClick={() => setSelectedTime(time)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    selectedTime === time
+                      ? 'bg-purple-500 text-white'
+                      : darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  {time}
+                </button>
+              ))}
+            </div>
+            <h3 className="font-semibold mb-4">Select Specialist</h3>
+            <div className="space-y-2 mb-6">
+              {staff.map((name, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedStaff(name)}
+                  className={`w-full p-3 rounded-xl border text-left transition-all duration-300 flex items-center gap-3 ${
+                    selectedStaff === name
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-slate-600' : 'bg-gray-200'}`}>
+                    {name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <span className="font-medium">{name}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setStep(1)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                Back
+              </button>
+              <button
+                onClick={() => setStep(3)}
+                disabled={!selectedTime || !selectedStaff}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  selectedTime && selectedStaff
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="animate-slideUp">
+            <h3 className="font-semibold mb-4">Booking Summary</h3>
+            <div className={`p-4 rounded-xl border space-y-3 mb-6 ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-gray-200 bg-gray-50'}`}>
+              <div className="flex justify-between">
+                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Venue</span>
+                <span className="text-sm font-medium">{venue.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Service</span>
+                <span className="text-sm font-medium">{selectedService?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Time</span>
+                <span className="text-sm font-medium">{selectedTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Specialist</span>
+                <span className="text-sm font-medium">{selectedStaff}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Price</span>
+                <span className="text-sm font-bold text-purple-500">Rs. {selectedService?.price.toLocaleString()}</span>
+              </div>
+              <hr className={`${darkMode ? 'border-slate-600' : 'border-gray-200'}`} />
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-semibold">Amount Due Today</span>
+                <div className="text-right">
+                  <span className="text-lg font-bold text-green-500">Rs. 0</span>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Pay at Venue After Service</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setStep(2)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                Back
+              </button>
+              <button
+                onClick={confirmBooking}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                <Icons.Check /> Confirm Booking
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
