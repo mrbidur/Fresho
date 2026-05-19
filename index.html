@@ -49,6 +49,11 @@ const Icons = {
   CreditCard: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>),
   Users: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>),
   TrendingUp: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>),
+  Plus: () => (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>),
+  Settings: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>),
+  Image: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>),
+  Tag: () => (<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>),
+  Trash: () => (<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>),
 };
 const categories = [
   { id: 'hair', name: 'Hair & Barber', emoji: '\uD83D\uDC87\u200D\u2642\uFE0F' },
@@ -58,7 +63,7 @@ const categories = [
   { id: 'nails', name: 'Nails & Makeup', emoji: '\uD83D\uDC85' },
 ];
 
-const venueImages = {
+const defaultVenueImages = {
   h1: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop',
   h2: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop',
   h3: 'https://images.unsplash.com/photo-1585747860286-6e94e60e2eb0?w=400&h=300&fit=crop',
@@ -208,7 +213,7 @@ const venuesData = {
   ],
 };
 
-const servicesData = {
+const defaultServicesData = {
   hair: [
     { name: "Men's Haircut", price: 400 },
     { name: 'Hair Color', price: 1200 },
@@ -241,7 +246,7 @@ const servicesData = {
   ],
 };
 
-const staffData = {
+const defaultStaffData = {
   h1: ['Rajesh Shrestha', 'Anita Tamang', 'Bikash Gurung'],
   h2: ['Suman Rai', 'Priya Maharjan', 'Deepak Lama'],
   h3: ['Anil Thapa', 'Sabina KC', 'Roshan Magar'],
@@ -264,7 +269,17 @@ const staffData = {
   n4: ['Sarita Basnet', 'Gita Adhikari', 'Rina Magar'],
 };
 
+const staffRoles = ['Senior Stylist', 'Junior Stylist', 'Dental Surgeon', 'Dental Hygienist', 'Therapist', 'Esthetician', 'Nail Technician', 'Makeup Artist', 'Receptionist'];
+
 const timeSlots = ['9:00 AM', '10:00 AM', '11:30 AM', '1:30 PM', '3:00 PM', '4:00 PM', '5:30 PM'];
+
+// Helper to get category from venue id
+function getCategoryForVenue(venueId) {
+  for (const [cat, venues] of Object.entries(venuesData)) {
+    if (venues.find(v => v.id === venueId)) return cat;
+  }
+  return 'hair';
+}
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [view, setView] = useState('client');
@@ -287,10 +302,42 @@ function App() {
   const [processingPayment, setProcessingPayment] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
+  // Merchant Profile Management State (2-way synced)
+  const [merchantServices, setMerchantServices] = useState({});
+  const [merchantStaff, setMerchantStaff] = useState({});
+  const [merchantGallery, setMerchantGallery] = useState({});
+  const [merchantDeals, setMerchantDeals] = useState({});
+
   const merchantOptions = [
     { id: 'h1', name: 'Durbarmarg Hair Studio' },
     { id: 'd1', name: 'Kathmandu Dental Clinic' },
   ];
+
+  // Functions to get synced data for any venue
+  const getServicesForVenue = (venueId, category) => {
+    if (merchantServices[venueId] && merchantServices[venueId].length > 0) {
+      return merchantServices[venueId];
+    }
+    return defaultServicesData[category] || [];
+  };
+
+  const getStaffForVenue = (venueId) => {
+    if (merchantStaff[venueId] && merchantStaff[venueId].length > 0) {
+      return merchantStaff[venueId].map(s => s.name);
+    }
+    return defaultStaffData[venueId] || ['Staff Member 1', 'Staff Member 2', 'Staff Member 3'];
+  };
+
+  const getImageForVenue = (venueId) => {
+    if (merchantGallery[venueId] && merchantGallery[venueId].length > 0) {
+      return merchantGallery[venueId][0];
+    }
+    return defaultVenueImages[venueId];
+  };
+
+  const getDealsForVenue = (venueId) => {
+    return merchantDeals[venueId] || [];
+  };
 
   const showToast = (message) => {
     setToast(message);
@@ -425,6 +472,8 @@ function App() {
             setSearchQuery={setSearchQuery}
             filteredVenues={filteredVenues}
             openModal={openModal}
+            getImageForVenue={getImageForVenue}
+            getDealsForVenue={getDealsForVenue}
           />
         ) : (
           <ProviderView
@@ -439,6 +488,15 @@ function App() {
             completedForMerchant={completedForMerchant}
             completeBooking={completeBooking}
             inputClass={inputClass}
+            merchantServices={merchantServices}
+            setMerchantServices={setMerchantServices}
+            merchantStaff={merchantStaff}
+            setMerchantStaff={setMerchantStaff}
+            merchantGallery={merchantGallery}
+            setMerchantGallery={setMerchantGallery}
+            merchantDeals={merchantDeals}
+            setMerchantDeals={setMerchantDeals}
+            showToast={showToast}
           />
         )}
       </main>
@@ -465,12 +523,15 @@ function App() {
           paymentMethod={paymentMethod}
           setPaymentMethod={setPaymentMethod}
           processingPayment={processingPayment}
+          getServicesForVenue={getServicesForVenue}
+          getStaffForVenue={getStaffForVenue}
+          getImageForVenue={getImageForVenue}
         />
       )}
     </div>
   );
 }
-function ClientView({ darkMode, cardClass, inputClass, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, filteredVenues, openModal }) {
+function ClientView({ darkMode, cardClass, inputClass, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, filteredVenues, openModal, getImageForVenue, getDealsForVenue }) {
   return (
     <div className="animate-fadeIn">
       <div className="flex items-center gap-2 mb-4">
@@ -507,46 +568,61 @@ function ClientView({ darkMode, cardClass, inputClass, selectedCategory, setSele
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredVenues.map(venue => (
-          <div key={venue.id} className={`rounded-xl border overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${cardClass}`}>
-            <div className="h-40 relative overflow-hidden">
-              <img
-                src={venueImages[venue.id]}
-                alt={venue.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              <div className="absolute bottom-3 left-3 bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs font-medium">
-                {categories.find(c => c.id === selectedCategory)?.emoji} {categories.find(c => c.id === selectedCategory)?.name}
+        {filteredVenues.map(venue => {
+          const deals = getDealsForVenue(venue.id);
+          return (
+            <div key={venue.id} className={`rounded-xl border overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${cardClass}`}>
+              <div className="h-40 relative overflow-hidden">
+                <img
+                  src={getImageForVenue(venue.id)}
+                  alt={venue.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute bottom-3 left-3 bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs font-medium">
+                  {categories.find(c => c.id === selectedCategory)?.emoji} {categories.find(c => c.id === selectedCategory)?.name}
+                </div>
+                {deals.length > 0 && (
+                  <div className="absolute top-3 right-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg animate-pulse-once">
+                    {deals[0]}
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-2">{venue.name}</h3>
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="flex items-center gap-1 text-yellow-500">
+                    <Icons.Star />
+                    <span className="text-sm font-medium">{venue.rating}</span>
+                  </div>
+                  <div className={`flex items-center gap-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <Icons.MapPin />
+                    <span>{venue.distance} km</span>
+                  </div>
+                </div>
+                {deals.length > 1 && (
+                  <div className="mb-3 flex flex-wrap gap-1">
+                    {deals.slice(1).map((deal, idx) => (
+                      <span key={idx} className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">{deal}</span>
+                    ))}
+                  </div>
+                )}
+                <button
+                  onClick={() => openModal(venue)}
+                  className="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  View Services <Icons.ChevronRight />
+                </button>
               </div>
             </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-lg mb-2">{venue.name}</h3>
-              <div className="flex items-center gap-4 mb-3">
-                <div className="flex items-center gap-1 text-yellow-500">
-                  <Icons.Star />
-                  <span className="text-sm font-medium">{venue.rating}</span>
-                </div>
-                <div className={`flex items-center gap-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  <Icons.MapPin />
-                  <span>{venue.distance} km</span>
-                </div>
-              </div>
-              <button
-                onClick={() => openModal(venue)}
-                className="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                View Services <Icons.ChevronRight />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 }
-
-function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMerchant, merchantOptions, walletBalances, revenues, pendingForMerchant, completedForMerchant, completeBooking, inputClass }) {
+function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMerchant, merchantOptions, walletBalances, revenues, pendingForMerchant, completedForMerchant, completeBooking, inputClass, merchantServices, setMerchantServices, merchantStaff, setMerchantStaff, merchantGallery, setMerchantGallery, merchantDeals, setMerchantDeals, showToast }) {
+  const [providerTab, setProviderTab] = useState('operations');
   const walletBalance = walletBalances[selectedMerchant] || 0;
   const revenue = revenues[selectedMerchant] || 0;
   const lowBalance = walletBalance < 200;
@@ -566,6 +642,65 @@ function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMercha
         </select>
       </div>
 
+      {/* Tab Navigation */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setProviderTab('operations')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+            providerTab === 'operations'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25'
+              : darkMode ? 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          <Icons.Calendar /> Operations
+        </button>
+        <button
+          onClick={() => setProviderTab('config')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+            providerTab === 'config'
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25'
+              : darkMode ? 'bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+          }`}
+        >
+          <Icons.Settings /> Shop Configuration
+        </button>
+      </div>
+
+      {providerTab === 'operations' ? (
+        <OperationsTab
+          darkMode={darkMode}
+          cardClass={cardClass}
+          walletBalance={walletBalance}
+          revenue={revenue}
+          lowBalance={lowBalance}
+          pendingForMerchant={pendingForMerchant}
+          completedForMerchant={completedForMerchant}
+          completeBooking={completeBooking}
+        />
+      ) : (
+        <ShopConfigTab
+          darkMode={darkMode}
+          cardClass={cardClass}
+          inputClass={inputClass}
+          selectedMerchant={selectedMerchant}
+          merchantServices={merchantServices}
+          setMerchantServices={setMerchantServices}
+          merchantStaff={merchantStaff}
+          setMerchantStaff={setMerchantStaff}
+          merchantGallery={merchantGallery}
+          setMerchantGallery={setMerchantGallery}
+          merchantDeals={merchantDeals}
+          setMerchantDeals={setMerchantDeals}
+          showToast={showToast}
+        />
+      )}
+    </div>
+  );
+}
+
+function OperationsTab({ darkMode, cardClass, walletBalance, revenue, lowBalance, pendingForMerchant, completedForMerchant, completeBooking }) {
+  return (
+    <div className="animate-fadeIn">
       {lowBalance && (
         <div className="mb-6 p-4 rounded-xl bg-yellow-50 border border-yellow-200 flex items-center gap-3">
           <span className="text-yellow-600"><Icons.AlertTriangle /></span>
@@ -657,9 +792,285 @@ function ProviderView({ darkMode, cardClass, selectedMerchant, setSelectedMercha
     </div>
   );
 }
-function BookingModal({ darkMode, cardClass, venue, category, step, setStep, selectedService, setSelectedService, selectedTime, setSelectedTime, selectedStaff, setSelectedStaff, selectedDate, setSelectedDate, bookingSuccess, confirmBooking, closeModal, paymentMethod, setPaymentMethod, processingPayment }) {
-  const services = servicesData[category] || [];
-  const staff = staffData[venue.id] || ['Staff Member 1', 'Staff Member 2', 'Staff Member 3'];
+function ShopConfigTab({ darkMode, cardClass, inputClass, selectedMerchant, merchantServices, setMerchantServices, merchantStaff, setMerchantStaff, merchantGallery, setMerchantGallery, merchantDeals, setMerchantDeals, showToast }) {
+  const category = getCategoryForVenue(selectedMerchant);
+  const currentServices = merchantServices[selectedMerchant] || defaultServicesData[category] || [];
+  const currentStaff = merchantStaff[selectedMerchant] || (defaultStaffData[selectedMerchant] || []).map(name => ({ name, role: 'Senior Stylist' }));
+  const currentGallery = merchantGallery[selectedMerchant] || [];
+  const currentDeals = merchantDeals[selectedMerchant] || [];
+
+  // Local state for forms
+  const [newServiceName, setNewServiceName] = useState('');
+  const [newServicePrice, setNewServicePrice] = useState('');
+  const [newStaffName, setNewStaffName] = useState('');
+  const [newStaffRole, setNewStaffRole] = useState('Senior Stylist');
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [newDeal, setNewDeal] = useState('');
+
+  const updateServicePrice = (index, newPrice) => {
+    const updated = [...currentServices];
+    updated[index] = { ...updated[index], price: parseInt(newPrice) || 0 };
+    setMerchantServices(prev => ({ ...prev, [selectedMerchant]: updated }));
+  };
+
+  const addService = () => {
+    if (!newServiceName.trim() || !newServicePrice) return;
+    const updated = [...currentServices, { name: newServiceName.trim(), price: parseInt(newServicePrice) || 0 }];
+    setMerchantServices(prev => ({ ...prev, [selectedMerchant]: updated }));
+    setNewServiceName('');
+    setNewServicePrice('');
+    showToast('New service added successfully');
+  };
+
+  const removeService = (index) => {
+    const updated = currentServices.filter((_, i) => i !== index);
+    setMerchantServices(prev => ({ ...prev, [selectedMerchant]: updated }));
+  };
+
+  const addStaffMember = () => {
+    if (!newStaffName.trim()) return;
+    const updated = [...currentStaff, { name: newStaffName.trim(), role: newStaffRole }];
+    setMerchantStaff(prev => ({ ...prev, [selectedMerchant]: updated }));
+    setNewStaffName('');
+    showToast('Staff member added successfully');
+  };
+
+  const removeStaffMember = (index) => {
+    const updated = currentStaff.filter((_, i) => i !== index);
+    setMerchantStaff(prev => ({ ...prev, [selectedMerchant]: updated }));
+  };
+
+  const addGalleryImage = (url) => {
+    if (!url.trim()) return;
+    const updated = [...currentGallery, url.trim()];
+    setMerchantGallery(prev => ({ ...prev, [selectedMerchant]: updated }));
+    setNewImageUrl('');
+    showToast('Image added to gallery');
+  };
+
+  const removeGalleryImage = (index) => {
+    const updated = currentGallery.filter((_, i) => i !== index);
+    setMerchantGallery(prev => ({ ...prev, [selectedMerchant]: updated }));
+  };
+
+  const addDeal = () => {
+    if (!newDeal.trim()) return;
+    const updated = [...currentDeals, newDeal.trim()];
+    setMerchantDeals(prev => ({ ...prev, [selectedMerchant]: updated }));
+    setNewDeal('');
+    showToast('Promotion added successfully');
+  };
+
+  const removeDeal = (index) => {
+    const updated = currentDeals.filter((_, i) => i !== index);
+    setMerchantDeals(prev => ({ ...prev, [selectedMerchant]: updated }));
+  };
+
+  const quickDemoImages = [
+    { label: 'Luxury Interior', url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop' },
+    { label: 'Modern Equipment', url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop' },
+    { label: 'Hair Styling', url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=400&fit=crop' },
+  ];
+
+  return (
+    <div className="animate-fadeIn">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold flex items-center gap-2 mb-1"><Icons.Settings /> Shop Configuration & Profile Setup</h2>
+        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Manage your shop's services, team, media, and promotions. Changes sync instantly to the Client Marketplace.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Service Menu & Dynamic Pricing */}
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-purple-100 text-purple-600"><Icons.Tag /></span>
+            Service Menu & Dynamic Pricing
+          </h3>
+          <div className="space-y-2 mb-4 max-h-64 overflow-y-auto">
+            {currentServices.map((service, idx) => (
+              <div key={idx} className={`flex items-center gap-2 p-2 rounded-lg ${darkMode ? 'bg-slate-700/50' : 'bg-gray-50'}`}>
+                <span className="flex-1 text-sm font-medium truncate">{service.name}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500">Rs.</span>
+                  <input
+                    type="number"
+                    value={service.price}
+                    onChange={(e) => updateServicePrice(idx, e.target.value)}
+                    className={`w-20 px-2 py-1 rounded-lg border text-sm text-right focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+                  />
+                </div>
+                <button onClick={() => removeService(idx)} className="p-1 text-red-400 hover:text-red-600 transition-colors">
+                  <Icons.Trash />
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className={`p-3 rounded-lg border-2 border-dashed ${darkMode ? 'border-slate-600' : 'border-gray-300'}`}>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                placeholder="Service name"
+                value={newServiceName}
+                onChange={(e) => setNewServiceName(e.target.value)}
+                className={`flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                value={newServicePrice}
+                onChange={(e) => setNewServicePrice(e.target.value)}
+                className={`w-24 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+              />
+              <button onClick={addService} className="px-3 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all flex items-center gap-1 whitespace-nowrap">
+                <Icons.Plus /> Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Team & Staff Management */}
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-blue-100 text-blue-600"><Icons.Users /></span>
+            Team & Staff Management
+          </h3>
+          <div className="space-y-2 mb-4 max-h-64 overflow-y-auto">
+            {currentStaff.map((member, idx) => (
+              <div key={idx} className={`flex items-center gap-3 p-2 rounded-lg ${darkMode ? 'bg-slate-700/50' : 'bg-gray-50'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-slate-600 text-white' : 'bg-purple-100 text-purple-700'}`}>
+                  {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{member.name}</p>
+                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{member.role}</p>
+                </div>
+                <button onClick={() => removeStaffMember(idx)} className="p-1 text-red-400 hover:text-red-600 transition-colors">
+                  <Icons.Trash />
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className={`p-3 rounded-lg border-2 border-dashed ${darkMode ? 'border-slate-600' : 'border-gray-300'}`}>
+            <div className="flex flex-col gap-2">
+              <input
+                type="text"
+                placeholder="Employee name"
+                value={newStaffName}
+                onChange={(e) => setNewStaffName(e.target.value)}
+                className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+              />
+              <div className="flex gap-2">
+                <select
+                  value={newStaffRole}
+                  onChange={(e) => setNewStaffRole(e.target.value)}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+                >
+                  {staffRoles.map(role => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+                <button onClick={addStaffMember} className="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-all flex items-center gap-1 whitespace-nowrap">
+                  <Icons.Plus /> Save Staff
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Media Gallery & Portfolio Upload */}
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-green-100 text-green-600"><Icons.Image /></span>
+            Media Gallery & Portfolio Upload
+          </h3>
+          {currentGallery.length > 0 && (
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {currentGallery.map((url, idx) => (
+                <div key={idx} className="relative group rounded-lg overflow-hidden h-24">
+                  <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => removeGalleryImage(idx)}
+                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Icons.Trash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className={`p-3 rounded-lg border-2 border-dashed mb-3 ${darkMode ? 'border-slate-600' : 'border-gray-300'}`}>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Paste image URL..."
+                value={newImageUrl}
+                onChange={(e) => setNewImageUrl(e.target.value)}
+                className={`flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+              />
+              <button onClick={() => addGalleryImage(newImageUrl)} className="px-3 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white text-sm font-medium hover:opacity-90 transition-all flex items-center gap-1 whitespace-nowrap">
+                <Icons.Plus /> Add
+              </button>
+            </div>
+          </div>
+          <div>
+            <p className={`text-xs font-medium mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Quick Demo Images:</p>
+            <div className="flex flex-wrap gap-2">
+              {quickDemoImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => addGalleryImage(img.url)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${darkMode ? 'bg-slate-700 hover:bg-slate-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} border ${darkMode ? 'border-slate-600' : 'border-gray-200'}`}
+                >
+                  {img.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Deals & Listing Offers */}
+        <div className={`p-5 rounded-xl border ${cardClass}`}>
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-orange-100 text-orange-600"><Icons.Tag /></span>
+            Dynamic Deals & Listing Offers
+          </h3>
+          {currentDeals.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {currentDeals.map((deal, idx) => (
+                <div key={idx} className={`flex items-center gap-2 p-2.5 rounded-lg ${darkMode ? 'bg-slate-700/50' : 'bg-green-50'}`}>
+                  <span className="text-green-500 text-lg">%</span>
+                  <span className="flex-1 text-sm font-medium">{deal}</span>
+                  <button onClick={() => removeDeal(idx)} className="p-1 text-red-400 hover:text-red-600 transition-colors">
+                    <Icons.Trash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className={`p-3 rounded-lg border-2 border-dashed ${darkMode ? 'border-slate-600' : 'border-gray-300'}`}>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder='e.g. "Flat 15% Off on Tuesdays!"'
+                value={newDeal}
+                onChange={(e) => setNewDeal(e.target.value)}
+                className={`flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 ${inputClass}`}
+              />
+              <button onClick={addDeal} className="px-3 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-500 text-white text-sm font-medium hover:opacity-90 transition-all flex items-center gap-1 whitespace-nowrap">
+                <Icons.Plus /> Add
+              </button>
+            </div>
+            <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Active promotions will appear as badges on your venue card in the Client Marketplace.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function BookingModal({ darkMode, cardClass, venue, category, step, setStep, selectedService, setSelectedService, selectedTime, setSelectedTime, selectedStaff, setSelectedStaff, selectedDate, setSelectedDate, bookingSuccess, confirmBooking, closeModal, paymentMethod, setPaymentMethod, processingPayment, getServicesForVenue, getStaffForVenue, getImageForVenue }) {
+  const services = getServicesForVenue(venue.id, category);
+  const staff = getStaffForVenue(venue.id);
+  const venueImage = getImageForVenue(venue.id);
   const modalBg = darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200';
   const reviews = reviewsData[venue.id] || [];
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
@@ -728,7 +1139,7 @@ function BookingModal({ darkMode, cardClass, venue, category, step, setStep, sel
 
         {/* Venue Image */}
         <div className="mb-4 rounded-xl overflow-hidden h-36">
-          <img src={venueImages[venue.id]} alt={venue.name} className="w-full h-full object-cover" />
+          <img src={venueImage} alt={venue.name} className="w-full h-full object-cover" />
         </div>
 
         {step === 1 && (
