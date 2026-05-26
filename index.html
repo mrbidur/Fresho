@@ -61,6 +61,9 @@ const categories = [
   { id: 'spa', name: 'Spa & Wellness', emoji: '\uD83D\uDC86\u200D\u2640\uFE0F' },
   { id: 'skin', name: 'Skin Aesthetics', emoji: '\uD83E\uDDEA' },
   { id: 'nails', name: 'Nails & Makeup', emoji: '\uD83D\uDC85' },
+  { id: 'health', name: 'Executive Health', emoji: '\uD83C\uDFE5' },
+  { id: 'tattoo', name: 'Premium Tattoo', emoji: '\uD83C\uDFA8' },
+  { id: 'petcare', name: 'Pet Care', emoji: '\uD83D\uDC3E' },
 ];
 
 const defaultVenueImages = {
@@ -84,6 +87,18 @@ const defaultVenueImages = {
   n2: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
   n3: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop',
   n4: 'https://images.unsplash.com/photo-1457972729786-0411a3b2b626?w=400&h=300&fit=crop',
+  he1: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop',
+  he2: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=300&fit=crop',
+  he3: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=400&h=300&fit=crop',
+  he4: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=400&h=300&fit=crop',
+  tt1: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?w=400&h=300&fit=crop',
+  tt2: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?w=400&h=300&fit=crop',
+  tt3: 'https://images.unsplash.com/photo-1590246814883-57c511c5f53c?w=400&h=300&fit=crop',
+  tt4: 'https://images.unsplash.com/photo-1565058379802-bbe93b2f703a?w=400&h=300&fit=crop',
+  pc1: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=400&h=300&fit=crop',
+  pc2: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=300&fit=crop',
+  pc3: 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=400&h=300&fit=crop',
+  pc4: 'https://images.unsplash.com/photo-1583337130417-13571a247aae?w=400&h=300&fit=crop',
 };
 
 const reviewsData = {
@@ -178,6 +193,60 @@ const reviewsData = {
     { name: 'Sarita Basnet', rating: 5, text: 'Best makeup lounge in Maharajgunj. Professional artists who listen to what you want.' },
     { name: 'Gita Adhikari', rating: 5, text: 'Got engagement makeup done here. Everyone said I looked absolutely gorgeous.' },
   ],
+  he1: [
+    { name: 'Binod Sharma', rating: 5, text: 'The executive checkup was thorough and efficient. Dr. Rajendra explained everything clearly.' },
+    { name: 'Sushma Joshi', rating: 5, text: 'Best health screening experience in Kathmandu. Very professional staff and modern equipment.' },
+    { name: 'Arun Pandey', rating: 4, text: 'Comprehensive cardiac screening. Worth the investment for peace of mind.' },
+  ],
+  he2: [
+    { name: 'Kamala Devi', rating: 5, text: 'Got my parents full body checkup done here. Very caring staff and quick results.' },
+    { name: 'Suresh Khadka', rating: 4, text: 'Good diagnostics center with modern machines. Reports came same day.' },
+  ],
+  he3: [
+    { name: 'Pratima Shrestha', rating: 5, text: 'The wellness package was excellent value. Covered all the important tests.' },
+    { name: 'Naresh Gurung', rating: 4, text: 'Professional health screening. The doctors took time to explain each result.' },
+    { name: 'Radha Thapa', rating: 5, text: 'Booked the parent care bundle for my family back home. Everything was handled perfectly.' },
+  ],
+  he4: [
+    { name: 'Dilip Maharjan', rating: 5, text: 'VIP suite is worth it. No waiting, personal attention, and comprehensive testing.' },
+    { name: 'Shanti Rai', rating: 5, text: 'Star Hospital VIP experience is unmatched. From reception to results, everything was seamless.' },
+  ],
+  tt1: [
+    { name: 'Sagar Tamang', rating: 5, text: 'Mohan is a true artist. My sleeve turned out even better than the design we agreed on.' },
+    { name: 'Nirmala KC', rating: 5, text: 'Got my first tattoo here. Mohan was patient and the result is stunning.' },
+    { name: 'Rajan Shrestha', rating: 4, text: 'Clean studio, amazing artistry. The consultation process was very thorough.' },
+  ],
+  tt2: [
+    { name: 'Tenzin Norbu', rating: 5, text: 'The geometric mandala design was perfect. Incredible precision and detail.' },
+    { name: 'Prashant Magar', rating: 4, text: 'Great studio for spiritual and geometric designs. Very meditative experience.' },
+  ],
+  tt3: [
+    { name: 'Bikash Lama', rating: 5, text: 'Best collective of artists in Thamel. Each has their own unique style.' },
+    { name: 'Anuja Rai', rating: 4, text: 'Got a beautiful traditional Newari design. The artists really respect the culture.' },
+    { name: 'Sujan Thapa', rating: 5, text: 'Walk-in friendly and professional. My small piece turned out amazing.' },
+  ],
+  tt4: [
+    { name: 'Karma Dolma', rating: 5, text: 'Black Lotus is the premium tattoo experience in KTM. Flawless blackwork.' },
+    { name: 'Dipesh Gurung', rating: 5, text: 'The cover-up work here is incredible. You cannot tell there was an old tattoo underneath.' },
+  ],
+  pc1: [
+    { name: 'Rina Maharjan', rating: 5, text: 'My golden retriever loved the grooming session. He came out looking like a show dog!' },
+    { name: 'Ashok Shrestha', rating: 5, text: 'Best pet grooming in the valley. Very gentle with nervous dogs.' },
+    { name: 'Puja Tamang', rating: 4, text: 'Great service and the staff clearly love animals. My cat was calm the whole time.' },
+  ],
+  pc2: [
+    { name: 'Binita Gurung', rating: 5, text: 'The mobile spa came right to our home. So convenient and our dog was relaxed in familiar surroundings.' },
+    { name: 'Rajesh Rai', rating: 4, text: 'Excellent mobile service. No more stressful car rides for our anxious pup.' },
+  ],
+  pc3: [
+    { name: 'Dr. Sameer Joshi', rating: 5, text: 'Top-notch veterinary care. Dr. Kavita treated our senior dog with such compassion.' },
+    { name: 'Sunita Basnet', rating: 4, text: 'Comprehensive vet checkup with vaccination. Very thorough and professional.' },
+    { name: 'Mohan Thapa', rating: 5, text: 'The luxury boarding facility is amazing. Our cats were well cared for while we traveled.' },
+  ],
+  pc4: [
+    { name: 'Tara Lama', rating: 5, text: 'Boudha Pet Wellness has the most caring staff. Our puppy health checkup was so gentle.' },
+    { name: 'Sangita Maharjan', rating: 5, text: 'The dental cleaning for our dog was done perfectly. Very skilled team.' },
+  ],
 };
 
 const venuesData = {
@@ -210,6 +279,24 @@ const venuesData = {
     { id: 'n2', name: 'Jhamsikhel Beauty Bar', rating: 4.8, distance: 0.9, gradient: 'from-violet-500 to-fuchsia-500' },
     { id: 'n3', name: 'Thamel Glam Studio', rating: 4.7, distance: 0.7, gradient: 'from-pink-500 to-violet-500' },
     { id: 'n4', name: 'Maharajgunj Makeup Lounge', rating: 5.0, distance: 2.4, gradient: 'from-purple-500 to-fuchsia-500' },
+  ],
+  health: [
+    { id: 'he1', name: 'Nepal Mediciti Executive Wing', rating: 4.9, distance: 2.5, gradient: 'from-red-500 to-rose-500' },
+    { id: 'he2', name: 'Grande Diagnostics Lazimpat', rating: 4.8, distance: 1.3, gradient: 'from-rose-500 to-pink-500' },
+    { id: 'he3', name: 'Norvic Health Shield', rating: 4.7, distance: 3.0, gradient: 'from-red-500 to-orange-500' },
+    { id: 'he4', name: 'Star Hospital VIP Suite', rating: 4.9, distance: 1.8, gradient: 'from-pink-500 to-red-500' },
+  ],
+  tattoo: [
+    { id: 'tt1', name: "Mohan's Ink Kathmandu", rating: 4.9, distance: 0.8, gradient: 'from-gray-700 to-gray-900' },
+    { id: 'tt2', name: 'Sacred Geometry Studio', rating: 4.8, distance: 1.5, gradient: 'from-indigo-600 to-purple-700' },
+    { id: 'tt3', name: 'Thamel Tattoo Collective', rating: 4.7, distance: 0.5, gradient: 'from-slate-700 to-slate-900' },
+    { id: 'tt4', name: 'Black Lotus Ink', rating: 5.0, distance: 2.0, gradient: 'from-purple-800 to-black' },
+  ],
+  petcare: [
+    { id: 'pc1', name: 'Paws & Claws Jhamsikhel', rating: 4.9, distance: 1.2, gradient: 'from-amber-500 to-yellow-500' },
+    { id: 'pc2', name: 'Happy Tails Mobile Spa', rating: 4.8, distance: 0.0, gradient: 'from-green-500 to-lime-500' },
+    { id: 'pc3', name: 'Kathmandu Vet Luxury', rating: 4.7, distance: 2.3, gradient: 'from-teal-500 to-green-500' },
+    { id: 'pc4', name: 'Boudha Pet Wellness', rating: 4.9, distance: 1.9, gradient: 'from-yellow-500 to-orange-500' },
   ],
 };
 
@@ -244,6 +331,24 @@ const defaultServicesData = {
     { name: 'Nail Art', price: 2000 },
     { name: 'Bridal Makeup', price: 15000 },
   ],
+  health: [
+    { name: 'Full Body Executive Checkup', price: 15000 },
+    { name: 'Cardiac Screening', price: 8000 },
+    { name: 'Diaspora Parent Care Bundle', price: 25000 },
+    { name: "Women's Wellness Package", price: 12000 },
+  ],
+  tattoo: [
+    { name: 'Consultation + Small Piece (2hr)', price: 8000 },
+    { name: 'Medium Piece (4hr)', price: 15000 },
+    { name: 'Full Sleeve Session (6hr)', price: 25000 },
+    { name: 'Touch-up / Correction', price: 5000 },
+  ],
+  petcare: [
+    { name: 'Premium Grooming', price: 3500 },
+    { name: 'Mobile Spa Van Visit', price: 5000 },
+    { name: 'Vet Checkup + Vaccination', price: 4000 },
+    { name: 'Dental Cleaning', price: 6000 },
+  ],
 };
 
 const defaultStaffData = {
@@ -267,6 +372,18 @@ const defaultStaffData = {
   n2: ['Binita Rai', 'Asha Gurung', 'Kamala Lama'],
   n3: ['Sunita KC', 'Deepa Thapa', 'Manisha Sherpa'],
   n4: ['Sarita Basnet', 'Gita Adhikari', 'Rina Magar'],
+  he1: ['Dr. Rajendra Sharma', 'Dr. Sarita Thapa', 'Dr. Bikram Pandey', 'Nurse Kamala Rai'],
+  he2: ['Dr. Anup Joshi', 'Dr. Nirmala Gurung', 'Dr. Suresh Adhikari'],
+  he3: ['Dr. Prabhat Shrestha', 'Dr. Meena Basnet', 'Dr. Hari Lama', 'Dr. Rekha KC'],
+  he4: ['Dr. Sanjay Maharjan', 'Dr. Deepa Tamang', 'Dr. Anil Rai'],
+  tt1: ['Mohan Bajracharya', 'Ravi Shakya', 'Sagar Maharjan'],
+  tt2: ['Tenzin Lama', 'Prashant Rai', 'Asmita Gurung'],
+  tt3: ['Bikash Thapa', 'Sujan Shrestha', 'Nisha Tamang', 'Rohan Magar'],
+  tt4: ['Karma Sherpa', 'Dipesh Maharjan', 'Anita Lama'],
+  pc1: ['Dr. Ramesh Poudel', 'Sita Tamang', 'Binod Gurung'],
+  pc2: ['Prakash Rai', 'Sunita Sherpa', 'Dawa Lama'],
+  pc3: ['Dr. Kavita Shrestha', 'Dr. Mohan Thapa', 'Pema Gurung'],
+  pc4: ['Dr. Tara Basnet', 'Sangita Rai', 'Mingma Sherpa'],
 };
 
 const staffRoles = ['Senior Stylist', 'Junior Stylist', 'Dental Surgeon', 'Dental Hygienist', 'Therapist', 'Esthetician', 'Nail Technician', 'Makeup Artist', 'Receptionist'];
@@ -311,6 +428,9 @@ function App() {
   const merchantOptions = [
     { id: 'h1', name: 'Durbarmarg Hair Studio' },
     { id: 'd1', name: 'Kathmandu Dental Clinic' },
+    { id: 'he1', name: 'Nepal Mediciti Executive Wing' },
+    { id: 'tt1', name: "Mohan's Ink Kathmandu" },
+    { id: 'pc1', name: 'Paws & Claws Jhamsikhel' },
   ];
 
   // Functions to get synced data for any venue
