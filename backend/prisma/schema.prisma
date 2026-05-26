@@ -1,0 +1,262 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum CarDispatchStatus {
+  PENDING
+  DRIVER_ASSIGNED
+  EN_ROUTE_TO_PICKUP
+  ARRIVED_AT_PICKUP
+  EN_ROUTE_TO_VENUE
+  ARRIVED_AT_VENUE
+  COMPLETED
+  CANCELLED
+}
+
+enum TattooDepositStatus {
+  PENDING_DEPOSIT
+  DEPOSIT_PAID
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  NO_SHOW
+  DISPUTED
+  REFUNDED
+}
+
+enum PetServiceType {
+  GROOMING
+  VET_CHECKUP
+  DENTAL
+  VACCINATION
+  MOBILE_SPA
+  BOARDING
+}
+
+enum VanDispatchStatus {
+  AVAILABLE
+  DISPATCHED
+  EN_ROUTE
+  ARRIVED
+  IN_SERVICE
+  RETURNING
+  OFFLINE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  role      String   @default("customer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings       Booking[]
+  tattooArtist   TattooArtist?
+  tattooBookings TattooBooking[] @relation("TattooClient")
+  petProfiles    PetProfile[]
+  petBookings    PetBooking[]
+}
+
+model Venue {
+  id        String   @id @default(uuid())
+  name      String
+  category  String
+  address   String
+  latitude  Float
+  longitude Float
+  rating    Float    @default(0)
+  createdAt DateTime @default(now())
+
+  bookings      Booking[]
+  tattooArtists TattooArtist[]
+  petBookings   PetBooking[]
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  userId      String
+  venueId     String
+  serviceType String
+  date        DateTime
+  time        String
+  status      String   @default("pending")
+  price       Float
+  createdAt   DateTime @default(now())
+
+  user            User             @relation(fields: [userId], references: [id])
+  venue           Venue            @relation(fields: [venueId], references: [id])
+  labReports      LabReport[]
+  diasporaBooking DiasporaBooking?
+}
+
+model DiasporaBooking {
+  id                     String            @id @default(uuid())
+  payerName              String
+  payerEmail             String
+  payerPhone             String
+  payerCountry           String
+  payerCurrency          String
+  recipientName          String
+  recipientPhone         String
+  recipientAddress       String
+  packageType            String
+  exchangeRate           Float
+  amountLocalCurrency    Float
+  amountPayerCurrency    Float
+  stripePaymentIntentId  String?
+  carDispatchStatus      CarDispatchStatus @default(PENDING)
+  driverName             String?
+  driverPhone            String?
+  vehicleNumber          String?
+  estimatedPickupTime    DateTime?
+  actualPickupTime       DateTime?
+  venueArrivalTime       DateTime?
+  appointmentId          String            @unique
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  appointment Booking @relation(fields: [appointmentId], references: [id])
+}
+
+model LabReport {
+  id                  String   @id @default(uuid())
+  bookingId           String
+  patientName         String
+  reportType          String
+  fileUrl             String
+  fileSizeBytes       Int
+  sha256Hash          String
+  uploadedBy          String
+  verifiedByDoctor    Boolean  @default(false)
+  doctorName          String?
+  doctorLicenseNumber String?
+  verifiedAt          DateTime?
+  createdAt           DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+model TattooArtist {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  venueId         String
+  stageName       String
+  bio             String?
+  hourlyRate      Float
+  specializations String[]
+  yearsExperience Int
+  instagramHandle String?
+  portfolioUrl    String?
+  isAvailable     Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  user     User               @relation(fields: [userId], references: [id])
+  venue    Venue              @relation(fields: [venueId], references: [id])
+  bookings TattooBooking[]
+  gallery  TattooGalleryImage[]
+}
+
+model TattooBooking {
+  id                String              @id @default(uuid())
+  artistId          String
+  clientId          String
+  depositAmount     Float
+  depositStatus     TattooDepositStatus @default(PENDING_DEPOSIT)
+  estimatedHours    Float
+  actualHours       Float?
+  hourlyRate        Float
+  finalBillAmount   Float?
+  depositPaidAt     DateTime?
+  confirmedAt       DateTime?
+  arrivedAt         DateTime?
+  completedAt       DateTime?
+  disputeReason     String?
+  disputeResolution String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  artist TattooArtist @relation(fields: [artistId], references: [id])
+  client User         @relation("TattooClient", fields: [clientId], references: [id])
+}
+
+model TattooGalleryImage {
+  id           String   @id @default(uuid())
+  artistId     String
+  imageUrl     String
+  thumbnailUrl String
+  title        String?
+  description  String?
+  style        String?
+  createdAt    DateTime @default(now())
+
+  artist TattooArtist @relation(fields: [artistId], references: [id])
+}
+
+model PetProfile {
+  id                String   @id @default(uuid())
+  ownerId           String
+  name              String
+  species           String
+  breed             String?
+  age               Int?
+  weight            Float?
+  allergies         String[]
+  temperament       String?
+  medicalNotes      String?
+  vaccinationStatus String?
+  lastVetVisit      DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  owner    User         @relation(fields: [ownerId], references: [id])
+  bookings PetBooking[]
+}
+
+model PetBooking {
+  id                String         @id @default(uuid())
+  petId             String
+  ownerId           String
+  serviceType       PetServiceType
+  venueId           String?
+  vanId             String?
+  isRecurring       Boolean        @default(false)
+  recurringSchedule Json?
+  scheduledDate     DateTime
+  scheduledTime     String
+  address           String
+  latitude          Float
+  longitude         Float
+  status            String         @default("pending")
+  notes             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  pet   PetProfile    @relation(fields: [petId], references: [id])
+  owner User          @relation(fields: [ownerId], references: [id])
+  venue Venue?        @relation(fields: [venueId], references: [id])
+  van   MobileSpaVan? @relation(fields: [vanId], references: [id])
+}
+
+model MobileSpaVan {
+  id                 String           @id @default(uuid())
+  vehicleName        String
+  vehicleNumber      String           @unique
+  driverName         String
+  driverPhone        String
+  currentLatitude    Float?
+  currentLongitude   Float?
+  lastLocationUpdate DateTime?
+  serviceRadius      Float            @default(10.0)
+  equipmentList      String[]
+  status             VanDispatchStatus @default(AVAILABLE)
+  createdAt          DateTime         @default(now())
+
+  petBookings PetBooking[]
+}
